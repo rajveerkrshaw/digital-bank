@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Bank — Virtual Money</title>
+<style>
+:root{--navy:#101b35;--navy2:#172746;--gold:#f4c66a;--ink:#18243b;--muted:#71809a;--bg:#f3f6fb;--white:#fff;--green:#16865b;--red:#c94d58}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(120deg,var(--navy),#243d67);color:white;padding:22px max(20px,calc((100% - 1100px)/2));display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:20px;letter-spacing:.3px}.logo{width:42px;height:42px;border-radius:13px;background:var(--gold);color:var(--navy);display:grid;place-items:center;font-size:23px}
+.tag{font-size:12px;color:#d8e2f2;border:1px solid #506486;border-radius:99px;padding:7px 11px}
+main{max-width:1100px;margin:28px auto;padding:0 18px}.intro{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:22px}.intro h1{margin:0 0 6px;font-size:clamp(25px,4vw,34px)}.intro p{margin:0;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:18px}.card{background:white;border:1px solid #e5eaf2;border-radius:18px;padding:22px;box-shadow:0 8px 28px #1a31500b}.balance{background:linear-gradient(135deg,#182947,#2c4772);color:white;position:relative;overflow:hidden;min-height:190px}.balance:after{content:"";position:absolute;width:230px;height:230px;border:1px solid #ffffff22;border-radius:50%;right:-70px;top:-100px;box-shadow:0 0 0 25px #ffffff08,0 0 0 55px #ffffff06}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:#c4d1e5}.amount{font-size:clamp(35px,6vw,48px);font-weight:800;margin:12px 0 8px;letter-spacing:-1px}.sub{font-size:13px;color:#d0d9e8}.balance .pill{display:inline-block;margin-top:17px;background:#ffffff18;border:1px solid #ffffff28;border-radius:99px;padding:7px 11px;font-size:12px}
+h2{font-size:17px;margin:0 0 17px}.formrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{display:block;font-size:12px;font-weight:700;color:#52617a;margin:0 0 7px}input{width:100%;padding:12px 13px;border:1px solid #dce3ee;border-radius:10px;font:inherit;outline:none;background:#fbfcfe}input:focus{border-color:#6c8fc6;box-shadow:0 0 0 3px #6c8fc622}.field{margin-bottom:13px}button{border:0;border-radius:10px;padding:12px 16px;font-weight:750;font-size:14px;cursor:pointer;background:var(--navy);color:white}button:hover{filter:brightness(1.12)}button.gold{background:var(--gold);color:#1c2b46}button.light{background:#edf2f8;color:#233653}.full{width:100%}.muted{color:var(--muted);font-size:13px;line-height:1.5}.invite{display:flex;align-items:center;justify-content:space-between;background:#f6f8fc;border:1px dashed #b8c7dc;border-radius:12px;padding:13px 14px;gap:12px}.invite strong{font-size:20px;letter-spacing:2px;color:#1d365d}.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}.stat{background:#f7f9fc;border-radius:12px;padding:13px}.stat small{display:block;color:var(--muted);font-size:11px}.stat strong{font-size:20px;display:block;margin-top:5px}
+.section{margin-top:18px}.transactions{width:100%;border-collapse:collapse}.transactions th{text-align:left;color:#8390a5;font-size:11px;text-transform:uppercase;letter-spacing:.7px;padding:10px 8px;border-bottom:1px solid #e9edf3}.transactions td{padding:13px 8px;border-bottom:1px solid #eef1f6;font-size:13px}.transactions tr:last-child td{border-bottom:0}.credit{color:var(--green);font-weight:800}.debit{color:var(--red);font-weight:800}.empty{text-align:center;color:#8793a7;padding:22px 8px;font-size:13px}
+.note{margin-top:18px;background:#fff8e9;border:1px solid #f2dfb5;color:#745a24;border-radius:12px;padding:13px 15px;font-size:12px;line-height:1.5}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#172746;color:white;padding:12px 18px;border-radius:10px;box-shadow:0 8px 25px #0002;display:none;z-index:5;font-size:13px}
+footer{text-align:center;color:#8b97aa;font-size:12px;padding:25px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.intro{align-items:start;flex-direction:column}.formrow{grid-template-columns:1fr}.card{padding:18px}header{padding:16px 18px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="logo">₹</div><span>DIGITAL BANK</span></div><div class="tag">VIRTUAL MONEY • PLAY ONLY</div></header>
+<main>
+  <div class="intro"><div><h1>Your money. Your game.</h1><p>A pretend-money bank for friends — no real payments.</p></div><button class="light" id="resetBtn" title="Reset this demo">Reset demo</button></div>
+  <div class="grid">
+    <div>
+      <section class="card balance">
+        <div class="eyebrow">Available virtual balance</div>
+        <div class="amount" id="balance">₹5,000</div>
+        <div class="sub" id="welcome">Welcome, Player!</div>
+        <span class="pill">● Demo wallet</span>
+      </section>
+      <section class="card section">
+        <h2>Send virtual money</h2>
+        <div class="field"><label for="recipient">Friend's username</label><input id="recipient" placeholder="e.g. Aarav" maxlength="20"></div>
+        <div class="formrow">
+          <div class="field"><label for="amount">Amount (₹)</label><input id="amount" type="number" min="1" max="5000" step="1" placeholder="500"></div>
+          <div class="field"><label for="memo">Note (optional)</label><input id="memo" placeholder="For the game" maxlength="45"></div>
+        </div>
+        <button class="full gold" id="sendBtn">Send money →</button>
+        <p class="muted">This demo records transfers on this device only. It does not send money to another device.</p>
+      </section>
+      <section class="card section">
+        <h2>Recent transactions</h2>
+        <div id="transactionArea"></div>
+      </section>
+    </div>
+    <div>
+      <section class="card">
+        <h2>Your player account</h2>
+        <div class="field"><label for="player">Your display name</label><input id="player" maxlength="20" placeholder="Enter your name"></div>
+        <button class="full" id="saveName">Save name</button>
+        <div class="stats">
+          <div class="stat"><small>Starting balance</small><strong>₹5,000</strong></div>
+          <div class="stat"><small>Transfers sent</small><strong id="sentCount">0</strong></div>
+        </div>
+      </section>
+      <section class="card section">
+        <h2>Friends join with invite code</h2>
+        <p class="muted">Share this room code with friends so they can use the same code when joining the full online version.</p>
+        <div class="invite"><div><small class="muted">ROOM INVITE CODE</small><br><strong>MONO-5000</strong></div><button class="light" id="copyCode">Copy</button></div>
+        <div class="field" style="margin-top:16px"><label for="joinCode">Enter a friend's invite code</label><input id="joinCode" placeholder="e.g. MONO-5000"></div>
+        <button class="full" id="joinBtn">Check invite code</button>
+      </section>
+      <div class="note"><strong>Important:</strong> This is a front-end preview. Your balance is saved in this browser only. Real accounts, secure invite codes and transfers that sync between phones/laptops need an online database and sign-in service before publishing.</div>
+    </div>
+  </div>
+</main>
+<footer>Digital Bank • Virtual play money only • Not a real bank or payment service</footer>
+<div class="toast" id="toast"></div>
+<script>
+const KEY='digitalBankDemo_v1';
+const initial={name:'Player',balance:5000,sent:0,transactions:[]};
+let state;
+try{state=JSON.parse(localStorage.getItem(KEY))||initial}catch(e){state={...initial}}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
+function money(n){return '₹'+Number(n).toLocaleString('en-IN')}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.style.display='none',2600)}
+function render(){
+ document.getElementById('balance').textContent=money(state.balance);
+ document.getElementById('welcome').textContent='Welcome, '+state.name+'!';
+ document.getElementById('player').value=state.name;
+ document.getElementById('sentCount').textContent=state.sent;
+ const area=document.getElementById('transactionArea');
+ if(!state.transactions.length){area.innerHTML='<div class="empty">No transactions yet. Your activity will appear here.</div>';return}
+ area.innerHTML='<table class="transactions"><thead><tr><th>Activity</th><th>Details</th><th>Amount</th></tr></thead><tbody>'+state.transactions.slice(0,12).map(x=>`<tr><td>${escapeHtml(x.type)}</td><td>${escapeHtml(x.detail)}<br><small style="color:#8995a8">${escapeHtml(x.date)}</small></td><td class="${x.type==='Sent'?'debit':'credit'}">${x.type==='Sent'?'−':'+'}${money(x.amount)}</td></tr>`).join('')+'</tbody></table>';
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+document.getElementById('saveName').onclick=()=>{const n=document.getElementById('player').value.trim();if(!n)return toast('Please enter a name.');state.name=n;save();toast('Name saved!')};
+document.getElementById('sendBtn').onclick=()=>{
+ const to=document.getElementById('recipient').value.trim(),amt=Number(document.getElementById('amount').value),memo=document.getElementById('memo').value.trim();
+ if(!to)return toast("Enter your friend's username.");
+ if(to.toLowerCase()===state.name.toLowerCase())return toast("You can't send money to yourself.");
+ if(!Number.isInteger(amt)||amt<1)return toast('Enter a whole amount greater than ₹0.');
+ if(amt>state.balance)return toast('Not enough virtual balance.');
+ state.balance-=amt;state.sent++;state.transactions.unshift({type:'Sent',detail:'To '+to+(memo?' • '+memo:''),amount:amt,date:new Date().toLocaleString()});
+ save();document.getElementById('amount').value='';document.getElementById('memo').value='';toast('Demo transfer recorded on this device.');
+};
+document.getElementById('copyCode').onclick=async()=>{try{await navigator.clipboard.writeText('MONO-5000');toast('Invite code copied!')}catch(e){toast('Invite code: MONO-5000')}};
+document.getElementById('joinBtn').onclick=()=>{const c=document.getElementById('joinCode').value.trim().toUpperCase();toast(c==='MONO-5000'?'Invite code is valid for this demo.':'That invite code was not recognised.')};
+document.getElementById('resetBtn').onclick=()=>{if(confirm('Reset this demo balance and transaction history?')){state={...initial,transactions:[]};save();toast('Demo reset to ₹5,000.')}};
+render();
+</script>
+</body></html>
